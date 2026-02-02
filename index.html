@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <meta charset="utf-8">
+    <meta property="og:title" content="Expanding the Capabilities of Reinforcement Learning via Text Feedback" />
+    <meta property="og:description" content="Expanding the Capabilities of Reinforcement Learning via Text Feedback" />
+    <meta property="og:url" content="https://rltf-paper.github.io/" />
+    <meta property="og:image" content="https://rltf-paper.github.io/static/images/rltf.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="628" />
+    <meta name="viewport" content="initial-scale=1" />
+    <!-- twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Expanding the Capabilities of Reinforcement Learning via Text Feedback" />
+    <meta name="twitter:url" content="https://rltf-paper.github.io/" />
+    <meta name="twitter:image" content="https://rltf-paper.github.io/static/images/rltf.jpg" />
+    <meta name="twitter:site" content="@RLTFPaper" />
+    <meta name="twitter:image" content="https://rltf-paper.github.io/static/images/rltf.jpg" />
+    <meta name="twitter:image:src" content="https://rltf-paper.github.io/static/images/rltf.jpg" />
+    <meta name="twitter:image_alt" content="Expanding the Capabilities of Reinforcement Learning via Text Feedback" />
+
+    <title>Expanding the Capabilities of Reinforcement Learning via Text Feedback</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-PLACEHOLDER');
+    </script>
+
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="stylesheet" href="https://use.typekit.net/iag3ven.css">
+
+    <link rel="stylesheet" href="./static/css/prism.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.23.0/prism.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs-bibtex@2.0.1/prism-bibtex.min.js">
+    </script>
+
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+
+    <!-- KaTeX for method panels -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+    <!-- mathjax -->
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                processEscapes: true
+            }
+        });
+    </script>
+
+    <style>
+        /* Global font override to Playfair Display */
+        body, html {
+            font-family: 'Playfair Display', Georgia, serif !important;
+        }
+        
+        /* Override all text elements */
+        h1, h2, h3, h4, h5, h6,
+        p, span, div, a, li, ul, ol,
+        .title, .subtitle, .content,
+        .author-block, .author-name,
+        .publication-title, .publication-authors,
+        .has-text-justified, .has-text-centered,
+        .button, .external-link,
+        footer, .footer {
+            font-family: 'Playfair Display', Georgia, serif !important;
+        }
+
+        /* Author link color - purple to match SD panel */
+        .author-name {
+            color: #6366f1 !important;
+        }
+
+        .author-name:hover {
+            color: #818cf8 !important;
+        }
+
+        /* Method panels styling */
+        .method-panels-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1152px;
+            margin-left: auto;
+            margin-right: auto;
+            align-items: stretch;
+            margin-top: 20px;
+            padding: 0 1.5rem;
+        }
+        
+        .method-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 100%);
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            padding: 18px 22px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .method-panel.sd {
+            border-color: #a5b4fc;
+            background: linear-gradient(135deg, #fafaff 0%, #f5f5ff 100%);
+        }
+        
+        .method-panel.fm {
+            border-color: #f08c3a;
+            background: linear-gradient(135deg, #fff8f3 0%, #fef3e8 100%);
+        }
+        
+        .method-title {
+            text-align: center;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+        
+        .method-title.sd { color: #4338ca; }
+        .method-title.fm { color: #c96a1f; }
+        
+        .method-box {
+            background: #fff;
+            border: 1px solid #d4d4d4;
+            border-radius: 6px;
+            padding: 16px 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .method-label {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+            line-height: 1.4;
+        }
+        
+        .method-formula {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .method-formula .katex {
+            font-size: 1.1em;
+        }
+        
+        .method-subtext {
+            text-align: center;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+        
+        .method-insight {
+            text-align: center;
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin-top: auto;
+            letter-spacing: 0.01em;
+            line-height: 1.4;
+        }
+        
+        .method-insight.sd { background: #eef2ff; color: #4338ca; }
+        .method-insight.fm { background: #fef3e8; color: #c96a1f; }
+
+        @media (max-width: 768px) {
+            .method-panels-container {
+                flex-direction: column;
+            }
+        }
+
+        /* Results table styling */
+        .results-table {
+            font-size: 0.95em;
+        }
+        
+        .results-table .col-sd {
+            background-color: #eef2ff !important;
+        }
+        
+        .results-table .col-fm {
+            background-color: #fef3e8 !important;
+        }
+        
+        .results-table thead th.col-sd {
+            background-color: #e0e7ff !important;
+        }
+        
+        .results-table thead th.col-fm {
+            background-color: #fde9d9 !important;
+        }
+        
+        .results-table .section-header {
+            background-color: #f9fafb !important;
+        }
+        
+        .results-table .section-header td {
+            border-bottom: none;
+            padding-top: 12px;
+            padding-bottom: 6px;
+        }
+        
+        .results-table .benchmark-name {
+            padding-left: 1.5em;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .results-table caption {
+            font-family: 'Playfair Display', Georgia, serif !important;
+        }
+
+        /* Placeholder figure styling */
+        .placeholder-figure {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border: 2px dashed #94a3b8;
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 900px;
+        }
+        
+        .placeholder-figure .placeholder-icon {
+            font-size: 48px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        
+        .placeholder-figure .placeholder-text {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .placeholder-figure .placeholder-filename {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+
+        /* Figure caption styling */
+        .figure-caption {
+            font-family: 'Playfair Display', Georgia, serif !important;
+            font-size: 14px;
+            color: #4b5563;
+            text-align: center;
+            max-width: 900px;
+            margin: 16px auto 0;
+            line-height: 1.5;
+            padding: 0 20px;
+        }
+        
+        .figure-caption strong {
+            color: #1f2937;
+        }
+    </style>
+
+</head>
+
+<body>
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container is-max-widescreen">
+                <div class="columns is-centered">
+                    <div class="column has-text-centered">
+                        <p style="padding: 20px;" />
+                        <h1 class="title is-1 publication-title" style="font-size: 2.75rem;">
+                            <span id="main-title">
+                                Expanding the Capabilities of Reinforcement Learning via Text Feedback
+                            </span>
+                        </h1>
+                        <div class="is-size-5 publication-authors" style="line-height: 1.5; font-weight: 500; white-space: nowrap;">
+                            <span class="author-block">
+                                <a href="https://yudasong.github.io/" target="_blank" class="author-name">Yuda Song</a><sup>*,1</sup>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="author-block">
+                                <a href="https://lili-chen.github.io/" target="_blank" class="author-name">Lili Chen</a><sup>*,1</sup>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="author-block">
+                                <a href="https://tajwarfahim.github.io/" target="_blank" class="author-name">Fahim Tajwar</a><sup>1</sup>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="author-block">
+                                <a href="https://chercheurs.lille.inria.fr/~munos/" target="_blank" class="author-name">Rémi Munos</a><sup>2</sup>
+                            </span>
+                            <br>
+                            <span class="author-block">
+                                <a href="https://www.cs.cmu.edu/~dpathak/" target="_blank" class="author-name">Deepak Pathak</a><sup>1</sup>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="author-block">
+                                <a href="https://robotwhisperer.org/" target="_blank" class="author-name">J. Andrew Bagnell</a><sup>1,3</sup>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="author-block">
+                                <a href="https://www.cs.cmu.edu/~aarti/" target="_blank" class="author-name">Aarti Singh</a><sup>1</sup>
+                            </span>
+                            &nbsp;&nbsp;
+                            <span class="author-block">
+                                <a href="https://azanette.com/" target="_blank" class="author-name">Andrea Zanette</a><sup>1</sup>
+                            </span>
+                        </div>
+                        <p style="padding: 0.2rem;" />
+                        <div class="is-size-5 publication-authors">
+                            <span class="author-block" style="color: #252525;"><sup>1</sup>Carnegie Mellon University</span>
+                            &nbsp;&nbsp;
+                            <span class="author-block" style="color: #252525;"><sup>2</sup>Inria</span>
+                            &nbsp;&nbsp;
+                            <span class="author-block" style="color: #252525;"><sup>3</sup>Aurora Innovation</span>
+                            &nbsp;&nbsp;
+                            <span class="author-block" style="color: #252525;">*Equal Contribution</span>
+                        </div>
+
+                        <p style="padding: 10px;" />
+
+                        <div class="buttons is-centered">
+                            <button class="external-link button is-medium is-ghost publication-links is-rounded">
+                                <a href="" target="_blank"
+                                    style="text-decoration:none;">
+                                    <span class="icon is-small">
+                                        <i class="ai ai-arxiv"></i>
+                                    </span>
+                                    <span>arXiv</span>
+                                </a>
+                            </button>
+                            <button class="external-link button is-medium is-ghost publication-links is-rounded">
+                                <a href="https://github.com/lili-chen/rltf" target="_blank">
+                                    <span class="icon is-small">
+                                        <i class="fab fa-github"></i>
+                                    </span>
+                                    <span>code</span>
+                                </a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- hack to pull the below up vertically -->
+    <span style="display:block; margin-top:-1.75em;"/>
+
+    <!-- Method Overview -->
+    <section class="section" id="method-overview">
+        <div class="container is-max-widescreen">
+            <div class="columns is-centered has-text-centered">
+                <div class="column" style="border-radius: 10px; background-color: rgb(255,255,255)">
+                    <p style="padding: 10px;" />
+                    <div id="method-overview-wrapper">
+                        <video
+                        src="./static/images/rltf_animation.mp4"
+                        autoplay
+                        muted
+                        playsinline
+                        onended="this.pause();">
+                        </video>
+                        <!-- <img src="./static/images/rltf_animation.gif" alt="Reinforcement Learning from Text Feedback"
+                        class="method-overview-full-img  method-overview" draggable="false" />                         -->
+
+                    </div>
+                    <p style="padding: 10px;" />
+                    <div class="method-overview-text has-text-justified">
+                        <p>
+                            Overview of Reinforcement Learning from Text Feedback (RLTF). The framework uses a feedback provider (judge) to generate critiques \(c_0\) on the policy's first-turn output \(y_0\). <strong>RLTF-SD</strong> (Self Distillation) trains the policy to match the feedback-conditioned second-turn generations \(y_1\), and <strong>RLTF-FM</strong> (Feedback Modeling) predicts the critiques \(c_0\) as an auxiliary objective. Both methods improve single-turn test-time performance by internalizing feedback during training.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--/ Method Overview -->
+
+    <section class="section">
+        <div class="container is-max-widescreen">
+            <!-- Abstract. -->
+            <div class="columns is-centered has-text-centered">
+                <div class="column">
+                    <h2 class="title is-3">Abstract</h2>
+                    <div class="content has-text-justified">
+                        <p>
+                            The success of RL for LLM post-training stems from an unreasonably uninformative source: a single bit of information per rollout as binary reward or preference label. At the other extreme, distillation offers dense supervision but requires demonstrations, which are costly and difficult to scale. We study <b>text feedback</b> as an intermediate signal: richer than scalar rewards, yet cheaper than complete demonstrations. Textual feedback is a natural mode of human interaction and is already abundant in many real-world settings, where users, annotators, and automated judges routinely critique LLM outputs. Towards leveraging text feedback at scale, we formalize a multi-turn RL setup, <b>RL from Text Feedback (RLTF)</b>, where text feedback is available during training but not at inference. Therefore, models must learn to internalize the feedback in order to improve their test-time single-turn performance. To do this, we propose two methods: <b>Self Distillation (RLTF-SD)</b>, which trains the single-turn policy to match its own feedback-conditioned second-turn generations; and <b>Feedback Modeling (RLTF-FM)</b>, which predicts the feedback as an auxiliary objective. We provide theoretical analysis on both methods, and empirically evaluate on reasoning puzzles, competition math, and creative writing tasks. Our results show that both methods consistently outperform strong baselines across benchmarks, highlighting the potential of RL with an additional source of rich supervision at scale.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!--/ Abstract. -->
+        </div>
+    </section>
+
+    <p style="padding: 20px;" />
+
+    <!-- Method Details -->
+    <section>
+        <div class="container is-max-widescreen">
+            <div class="columns is-centered has-text-centered">
+                <div class="column">
+                    <h2 class="title is-3">
+                        Reinforcement Learning from Text Feedback (RLTF)
+                    </h2>
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            We define two key objectives. The <strong>multi-turn objective</strong> maximizes expected sum of rewards over an \(H\)-turn interaction:
+                        </p>
+                        <p class="equation" style="text-align: center; margin: 20px 0;">
+                            \[
+                            J_{\text{MultiTurn}}(\pi) = \mathbb{E}^{\pi}\left[\sum_{h=0}^{H-1} r_h\right]
+                            \]
+                        </p>
+                        <p class="equation-text">
+                            However, our goal is to improve <strong>single-turn competence</strong>, so we define the single-turn objective:
+                        </p>
+                        <p class="equation" style="text-align: center; margin: 20px 0;">
+                            \[
+                            J_{\text{SingleTurn}}(\pi) = \mathbb{E}_{x_0 \sim \mu}\left[\mathbb{E}_{y \sim \pi(\cdot|x_0)}[R(x_0, y)]\right]
+                            \]
+                        </p>
+                        <p class="equation-text">
+                            The central research question is: <em>Given access to feedback-augmented trajectories during training, how can we design learning objectives and algorithms that improve \(J_{\text{SingleTurn}}(\pi)\)?</em>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <p style="padding: 20px;" />
+
+    <!-- Self Distillation & Feedback Modeling - Two Column Layout -->
+    <section>
+        <div class="container is-max-widescreen">
+            <div class="columns is-centered">
+                <!-- Self Distillation Column -->
+                <div class="column">
+                    <h2 class="title is-3 has-text-centered">
+                        Self Distillation (RLTF-SD)
+                    </h2>
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            Text feedback often turns an incorrect first attempt into a correct second attempt. We convert this feedback-conditioned competence into improvement on the single-turn metric via <strong>Self Distillation</strong>: we treat the policy acting under the post-feedback prompt as a teacher, and distill it into the original policy.
+                        </p>
+                        <p class="equation-text">
+                            For each initial prompt \(x_0\), we sample a first-turn output \(y_0 \sim \pi(\cdot | x_0)\), obtain feedback \(c_0\), and form the feedback-augmented prompt \(x_1 = f(x_0, y_0, c_0)\). We then sample a revised output \(y_1 \sim \pi(\cdot | x_1)\) and use \(y_1\) to update \(\pi(\cdot | x_0)\) (not \(\pi(\cdot | x_1)\)).
+                        </p>
+                    </div>
+                </div>
+                <!-- Feedback Modeling Column -->
+                <div class="column">
+                    <h2 class="title is-3 has-text-centered">
+                        Feedback Modeling (RLTF-FM)
+                    </h2>
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            Beyond using feedback-conditioned rollouts, we can also treat the critique itself as a supervision signal. <strong>Feedback Modeling</strong> trains the policy to predict the feedback itself, providing dense token-level gradients on failure rollouts.
+                        </p>
+                        <p class="equation-text">
+                            To do this, we define a feedback-prediction distribution \(p_\pi(c | x, y) := \pi(c | f_{\text{FeeMol}}(x, y))\). Because the feedback model uses the same LM, it enables <strong>test-time scaling via self-feedback</strong>: the model can generate its own critiques and perform iterative refinement at inference time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Method Panels with Loss Functions -->
+    <div class="method-panels-container">
+        <!-- Self Distillation Panel -->
+        <div class="method-panel sd">
+            <div class="method-title sd">Self Distillation Loss</div>
+
+            <div class="method-box">
+                <div class="method-label">Distill feedback-conditioned<br>2nd turn into 1st turn</div>
+                <div class="method-formula">
+                    $$\ell_{\text{distill}}(\pi) = \mathbb{E}_{x_1 \sim P^\pi, y_1 \sim \pi(\cdot|x_1)}\left[\text{sg}[\pi(y_1 | x_0)] \cdot \frac{A(x_0, y_1)}{\pi_{\text{ref}}(y_1 | x_1)}\right]$$
+                </div>
+                <div class="method-subtext">with first-turn baseline: $A_i^{(0)} := R(x_0, y_1^i) - \frac{1}{N}\sum_{j=1}^{N} R(x_0, y_0^j)$</div>
+                <div class="method-insight sd">Converts second-turn generation → training signal</div>
+            </div>
+        </div>
+
+        <!-- Feedback Modeling Panel -->
+        <div class="method-panel fm">
+            <div class="method-title fm">Feedback Modeling Loss</div>
+
+            <div class="method-box">
+                <div class="method-label">Predict the critique as<br>auxiliary objective</div>
+                <div class="method-formula">
+                    $$\ell_{\text{FeeMol}}(\pi) := \mathbb{E}^\pi\left[\sum_{h=0}^{H-1} -\log p_\pi(c_h | x_h, y_h)\right]$$
+                </div>
+                <div class="method-subtext">Combined: $\max_\pi J_{\text{MultiTurn}}(\pi) - \lambda_{\text{FeeMol}} \ell_{\text{FeeMol}}(\pi)$</div>
+                <div class="method-insight fm">Enables test-time scaling via self-feedback</div>
+            </div>
+        </div>
+    </div>
+
+    <p style="padding: 20px;" />
+
+    <!-- Results -->
+    <section class="section">
+        <div class="container is-max-widescreen">
+            <div class="columns is-centered has-text-centered">
+                <div class="column">
+                    <h2 class="title is-3">
+                        Key Results
+                    </h2>
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            We evaluate on three domains: <strong>reasoning puzzles</strong> (Knights and Knaves, Binary Matrix, Shortest Path), <strong>competition math</strong> (MATH500, AIME24), and <strong>creative writing</strong> (LitBench, WritingBench).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p style="padding: 10px;" />
+
+        <div class="container is-max-widescreen">
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth results-table">
+                    <caption style="caption-side: top; padding: 10px 0;">
+                        Performance comparison across reasoning, math, and creative writing benchmarks
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th class="has-text-left">Benchmark</th>
+                            <th class="has-text-centered">Base Model</th>
+                            <th class="has-text-centered">GRPO Single-turn</th>
+                            <th class="has-text-centered">GRPO Multi-turn</th>
+                            <th class="has-text-centered">Feedback Descent</th>
+                            <th class="has-text-centered col-sd">RLTF-SD</th>
+                            <th class="has-text-centered col-fm">RLTF-FM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="section-header">
+                            <td><strong>Reasoning</strong></td>
+                            <td></td><td></td><td></td><td></td><td class="col-sd"></td><td class="col-fm"></td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">Knights and Knaves</td>
+                            <td class="has-text-centered">0.058</td>
+                            <td class="has-text-centered">0.373</td>
+                            <td class="has-text-centered">0.352</td>
+                            <td class="has-text-centered">0.055</td>
+                            <td class="has-text-centered col-sd">0.802</td>
+                            <td class="has-text-centered col-fm">0.880</td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">Binary Matrix</td>
+                            <td class="has-text-centered">0.001</td>
+                            <td class="has-text-centered">0.125</td>
+                            <td class="has-text-centered">0.950</td>
+                            <td class="has-text-centered">0.005</td>
+                            <td class="has-text-centered col-sd">0.976</td>
+                            <td class="has-text-centered col-fm">0.978</td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">Shortest Path</td>
+                            <td class="has-text-centered">0.034</td>
+                            <td class="has-text-centered">0.385</td>
+                            <td class="has-text-centered">0.384</td>
+                            <td class="has-text-centered">0.035</td>
+                            <td class="has-text-centered col-sd">0.830</td>
+                            <td class="has-text-centered col-fm">0.905</td>
+                        </tr>
+                        <tr class="section-header">
+                            <td><strong>Math</strong></td>
+                            <td></td><td></td><td></td><td></td><td class="col-sd"></td><td class="col-fm"></td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">MATH500 (DAPO)</td>
+                            <td class="has-text-centered">0.376</td>
+                            <td class="has-text-centered">0.526</td>
+                            <td class="has-text-centered">0.523</td>
+                            <td class="has-text-centered">0.415</td>
+                            <td class="has-text-centered col-sd">0.548</td>
+                            <td class="has-text-centered col-fm">0.567</td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">AIME24 (DAPO)</td>
+                            <td class="has-text-centered">0.025</td>
+                            <td class="has-text-centered">0.058</td>
+                            <td class="has-text-centered">0.025</td>
+                            <td class="has-text-centered">0.045</td>
+                            <td class="has-text-centered col-sd">0.088</td>
+                            <td class="has-text-centered col-fm">0.083</td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">MATH500 (DeepMath)</td>
+                            <td class="has-text-centered">0.376</td>
+                            <td class="has-text-centered">0.558</td>
+                            <td class="has-text-centered">0.578</td>
+                            <td class="has-text-centered">0.424</td>
+                            <td class="has-text-centered col-sd">0.598</td>
+                            <td class="has-text-centered col-fm">0.636</td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">AIME24 (DeepMath)</td>
+                            <td class="has-text-centered">0.025</td>
+                            <td class="has-text-centered">0.042</td>
+                            <td class="has-text-centered">0.050</td>
+                            <td class="has-text-centered">0.054</td>
+                            <td class="has-text-centered col-sd">0.058</td>
+                            <td class="has-text-centered col-fm">0.058</td>
+                        </tr>
+                        <tr class="section-header">
+                            <td><strong>Creative Writing</strong></td>
+                            <td></td><td></td><td></td><td></td><td class="col-sd"></td><td class="col-fm"></td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">LitBench</td>
+                            <td class="has-text-centered">4.20</td>
+                            <td class="has-text-centered">6.83</td>
+                            <td class="has-text-centered">6.41</td>
+                            <td class="has-text-centered">8.25</td>
+                            <td class="has-text-centered col-sd">8.80</td>
+                            <td class="has-text-centered col-fm">8.40</td>
+                        </tr>
+                        <tr>
+                            <td class="benchmark-name">WritingBench</td>
+                            <td class="has-text-centered">5.71</td>
+                            <td class="has-text-centered">5.92</td>
+                            <td class="has-text-centered">6.29</td>
+                            <td class="has-text-centered">5.30</td>
+                            <td class="has-text-centered col-sd">6.71</td>
+                            <td class="has-text-centered col-fm">6.39</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p style="padding: 10px;" />
+
+        <div class="container is-max-widescreen">
+            <div class="columns is-centered has-text-centered">
+                <div class="column">
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            <strong>Main findings:</strong>
+                        </p>
+                        <ul>
+                            <li>Both RLTF-SD and RLTF-FM consistently outperform all baselines across tasks, demonstrating the effectiveness of learning from text feedback.</li>
+                            <li>Naive multi-turn GRPO shows similar single-turn performance to single-turn training, suggesting that naively incorporating feedback as additional context is insufficient to internalize its learning signal.</li>
+                            <li>RLTF-SD excels in creative writing tasks where teacher-student distribution mismatch is small.</li>
+                            <li>RLTF-FM performs better on math and reasoning tasks where the auxiliary prediction loss is easier to optimize.</li>
+                            <li>Semantically rich text feedback is critical—replacing it with correctness-only feedback significantly degrades performance.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <p style="padding: 20px;" />
+
+    <!-- Ablation on Feedback (Section 5.3) -->
+    <section class="section" id="ablation-feedback">
+        <div class="container is-max-widescreen">
+            <div class="columns is-centered has-text-centered">
+                <div class="column">
+                    <h2 class="title is-3">
+                        Ablation: Text Feedback vs. Correctness-Only Feedback
+                    </h2>
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            A key question is whether the <strong>semantic richness</strong> of text feedback matters, or whether simply knowing correctness is sufficient. We compare RLTF-SD using full text critiques against a <strong>correctness-only</strong> baseline that replaces the judge's critique with a simple sentence: <em>"Your previous answer was {correct/incorrect}"</em>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="padding: 10px;" />
+
+            <!-- Placeholder Figure for Correctness Ablation -->
+            <div id="method-overview-wrapper">
+                        <img src="./static/images/correctness_ablation.png" alt="Reinforcement Learning from Text Feedback"
+                        class="method-overview-full-img  method-overview" draggable="false" />                        
+
+                    </div>
+
+            <p class="figure-caption">
+                <strong>Figure:</strong> Evaluation curves on <code>Knights and Knaves</code> and <code>MATH500</code> (trained on DAPO) for text feedback vs. correctness-only feedback. We compare single- and multi-turn accuracy on two algorithms: multi-turn GRPO and RLTF-SD. Overall, using text feedback outperforms using correctness-only feedback for single-turn and multi-turn accuracy on both algorithms.
+            </p>
+
+            <p style="padding: 20px;" />
+
+            <div class="columns is-centered has-text-centered">
+                <div class="column">
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            <strong>Key findings:</strong>
+                        </p>
+                        <ul>
+                            <li>The correctness-only baseline does not perform well compared to RLTF-SD with full text feedback, indicating that <strong>semantically rich text feedback is critical</strong>.</li>
+                            <li>One notable exception is the single-turn Knights and Knaves accuracy using multi-turn GRPO. Without distillation, neither text feedback nor correctness-only feedback can significantly influence the model's first-turn response, so there is little difference between the two in this setting.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <p style="padding: 20px;" />
+
+    <!-- Test-Time Scaling (Section 5.4) -->
+    <section class="section" id="test-time-scaling">
+        <div class="container is-max-widescreen">
+            <div class="columns is-centered has-text-centered">
+                <div class="column">
+                    <h2 class="title is-3">
+                        Test-Time Scaling via Self-Feedback
+                    </h2>
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            A unique advantage of <strong>RLTF-FM</strong> (Feedback Modeling) is that it enables <strong>test-time scaling via self-feedback</strong>. Because the model learns to predict critiques during training, it can generate its own feedback at inference time and perform iterative refinement—without requiring an external judge.
+                        </p>
+                        <p class="equation-text">
+                            We evaluate the model trained with RLTF-FM on <code>Knights and Knaves</code> and <code>MATH500</code> by allowing it to generate up to 5 rounds of self-feedback at inference time. We compare against a baseline that uses RL to improve the model's self-critique using second-turn reward, with early termination disabled during training.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <p style="padding: 10px;" />
+
+            <!-- Placeholder Figure for Test-Time Scaling -->
+            <div id="method-overview-wrapper" style="text-align: center;">
+                        <img src="./static/images/test_time_scaling_joint.png"
+                        alt="Reinforcement Learning from Text Feedback"
+                        class="method-overview-full-img method-overview"
+                        style="width: 60%; max-width: 60%;"
+                        draggable="false" />
+
+                    </div>
+
+            <p class="figure-caption">
+                <strong>Figure:</strong> Test-time scaling results on <code>Knights and Knaves</code> and <code>MATH500</code> (trained on DAPO). The x-axis shows the number of self-feedback rounds at inference time. We compare RLTF-FM with multi-turn scalar-based RL, where the dashed line ("+ Self-Critique") denotes further using RL to improve the self-critique during training.
+            </p>
+
+            <p style="padding: 20px;" />
+
+            <div class="columns is-centered has-text-centered">
+                <div class="column">
+                    <div class="content has-text-justified">
+                        <p class="equation-text">
+                            <strong>Key findings:</strong>
+                        </p>
+                        <ul>
+                            <li><strong>Self-critique RL alone is insufficient:</strong> In the math experiment, GRPO with and without self-critique training achieve similar test-time improvement, suggesting that simply training the model to critique itself with RL does not provide meaningful gains.</li>
+                            <li><strong>RLTF-FM enables significant test-time improvement:</strong> Adding the feedback modeling loss in addition to self-critique RL training brings substantial test-time improvement, demonstrating that learning to predict critiques transfers to better self-improvement capabilities.</li>
+                            <li><strong>Improvement saturates after a few rounds:</strong> The benefit of RLTF-FM is mainly in terms of the magnitude of improvement, not in terms of the number of rounds. Test-time improvement saturates after a handful of rounds, which corroborates findings from the self-improvement literature.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <p style="padding: 20px;" />
+
+    <footer class="footer">
+        <div class="container">
+            <div class="content has-text-centered">
+                <a class="icon-link" href="" target="_blank">
+                    <i class="ai ai-arxiv"></i>
+                </a>
+                &nbsp;
+                <a class="icon-link" href="https://github.com/lili-chen/rltf" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <div class="columns is-centered">
+                <div class="content">
+                    <p>
+                        Page source code was adapted from
+                        <a href="https://nerfies.github.io" target="_blank">here</a>
+                        and
+                        <a href="https://diffusion-classifier.github.io" target="_blank">here</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./static/js/index.js"></script>
+    <script src="./static/js/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs-bibtex@2.0.1/prism-bibtex.js"
+        integrity="sha256-+dK6uqUp/DnP6ef97s8XcoynBnGe5vM5gvBECH0EB3U=" crossorigin="anonymous">
+        </script>
+</body>
+
+</html>
