@@ -52,8 +52,7 @@
     </script>
 
     <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
-
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -452,7 +451,7 @@
                     </h2>
                     <div class="content has-text-justified">
                         <p class="equation-text">
-                            We define two key objectives. The <strong>multi-turn objective</strong> maximizes expected sum of rewards over an \(H\)-turn interaction:
+                            This problem is naturally formulated as a multi-turn setting: the model generates an attempt, feedback is appended to form an extended prompt, and the model revises.  The natural objective to optimize is the <strong>multi-turn objective</strong>, which maximizes expected sum of rewards over an \(H\)-turn interaction:
                         </p>
                         <p class="equation" style="text-align: center; margin: 20px 0;">
                             \[
@@ -460,7 +459,7 @@
                             \]
                         </p>
                         <p class="equation-text">
-                            However, our goal is to improve <strong>single-turn competence</strong>, so we define the single-turn objective:
+                            However, at test time, feedback is often unavailable, in the sense that users want good outputs on the first try. Therefore, our goal is to improve <strong>single-turn competence</strong>, so we define the single-turn objective:
                         </p>
                         <p class="equation" style="text-align: center; margin: 20px 0;">
                             \[
@@ -489,7 +488,7 @@
                     </h2>
                     <div class="content has-text-justified">
                         <p class="equation-text">
-                            Text feedback often turns an incorrect first attempt into a correct second attempt. We convert this feedback-conditioned competence into improvement on the single-turn metric via <strong>Self Distillation</strong>: we treat the policy acting under the post-feedback prompt as a teacher, and distill it into the original policy.
+                            Text feedback can turn an incorrect first attempt into a correct second attempt. We convert this feedback-conditioned generation into improvement on the single-turn metric via <strong>Self Distillation</strong>: we treat the policy acting under the second-turn prompt as a teacher, and distill it into the original policy.
                         </p>
                         <p class="equation-text">
                             For each initial prompt \(x_0\), we sample a first-turn output \(y_0 \sim \pi(\cdot | x_0)\), obtain feedback \(c_0\), and form the feedback-augmented prompt \(x_1 = f(x_0, y_0, c_0)\). We then sample a revised output \(y_1 \sim \pi(\cdot | x_1)\) and use \(y_1\) to update \(\pi(\cdot | x_0)\) (not \(\pi(\cdot | x_1)\)).
@@ -503,7 +502,7 @@
                     </h2>
                     <div class="content has-text-justified">
                         <p class="equation-text">
-                            Beyond using feedback-conditioned rollouts, we can also treat the critique itself as a supervision signal. <strong>Feedback Modeling</strong> trains the policy to predict the feedback itself, providing dense token-level gradients on failure rollouts.
+                            We can treat the critique itself as a supervision signal and explicitly model the feedback provider. <strong>Feedback Modeling</strong> trains the policy to predict the feedback itself, providing dense token-level gradients on failure rollouts.
                         </p>
                         <p class="equation-text">
                             To do this, we define a feedback-prediction distribution \(p_\pi(c | x, y) := \pi(c | f_{\text{FeeMol}}(x, y))\). Because the feedback model uses the same LM, it enables <strong>test-time scaling via self-feedback</strong>: the model can generate its own critiques and perform iterative refinement at inference time.
@@ -523,7 +522,7 @@
             <div class="method-box">
                 <div class="method-label">Distill feedback-conditioned<br>2nd turn into 1st turn</div>
                 <div class="method-formula">
-                    $$\ell_{\text{distill}}(\pi) = \mathbb{E}_{x_1 \sim P^\pi, y_1 \sim \pi(\cdot|x_1)}\left[\text{sg}[\pi(y_1 | x_0)] \cdot \frac{A(x_0, y_1)}{\pi_{\text{ref}}(y_1 | x_1)}\right]$$
+                    $$\ell_{\text{distill}}(\pi) = \mathbb{E}_{x_1 \sim P^\pi, y_1 \sim \pi(\cdot|x_1)}\left[\frac{\text{sg}[\pi(y_1 | x_0)]}{\pi_{\text{ref}}(y_1 | x_1)}A(x_0, y_1)\right]$$
                 </div>
                 <div class="method-subtext">with first-turn baseline: $A_i^{(0)} := R(x_0, y_1^i) - \frac{1}{N}\sum_{j=1}^{N} R(x_0, y_0^j)$</div>
                 <div class="method-insight sd">Converts second-turn generation → training signal</div>
@@ -537,7 +536,7 @@
             <div class="method-box">
                 <div class="method-label">Predict the critique as<br>auxiliary objective</div>
                 <div class="method-formula">
-                    $$\ell_{\text{FeeMol}}(\pi) := \mathbb{E}^\pi\left[\sum_{h=0}^{H-1} -\log p_\pi(c_h | x_h, y_h)\right]$$
+                    $$\ell_{\text{FeeMol}}(\pi) := \mathbb{E}^\pi\Bigg[\textstyle\sum_{h=0}^{H-1} -\log p_\pi(c_h | x_h, y_h)\Bigg]$$
                 </div>
                 <div class="method-subtext">Combined: $\max_\pi J_{\text{MultiTurn}}(\pi) - \lambda_{\text{FeeMol}} \ell_{\text{FeeMol}}(\pi)$</div>
                 <div class="method-insight fm">Enables test-time scaling via self-feedback</div>
