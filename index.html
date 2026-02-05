@@ -552,7 +552,7 @@
             <div class="method-box">
                 <div class="method-label">Distill feedback-conditioned<br>2nd turn into 1st turn</div>
                 <div class="method-formula">
-                    $$\ell_{\text{distill}}^{\text{awr}}(\pi)=\mathbb{E}_{y_1\sim\pi(\cdot\mid x_1)}\!\left[A(y_1)\,\nabla\log\pi(y_1\mid x_0)\right]$$
+                    $$\nabla\ell_{\text{distill}}^{\text{awr}}(\pi)=\mathbb{E}_{y_1\sim\pi(\cdot\mid x_1)}\!\left[A(y_1)\,\nabla\log\pi(y_1\mid x_0)\right]$$
                 </div>
                 <div class="method-subtext">
                     with first-turn baseline: $A^{(0)}(y_1):=R(x_0,y_1)-\frac{1}{N}\sum_{j=1}^{N}R(x_0,y_0^j)$
